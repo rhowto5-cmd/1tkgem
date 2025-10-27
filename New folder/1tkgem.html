@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>1tkgem</title>
+<style>
+body { margin:0; overflow:hidden; }
+canvas { background:#555; display:block; margin:auto; }
+</style>
+</head>
+<body>
+<canvas id="game" width="300" height="400"></canvas>
+<script>
+let c=document.getElementById('game');
+let x=c.getContext('2d');
+let car={x:130,y:340,w:40,h:60};
+let obs={x:100,y:-60,w:40,h:60};
+let left=false,right=false;
+let gameOver=false;
+let startTime = Date.now();
+
+window.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft')left=true;
+  if(e.key==='ArrowRight')right=true;
+  if(e.key===' '&&gameOver){reset();}
+});
+window.addEventListener('keyup',e=>{
+  if(e.key==='ArrowLeft')left=false;
+  if(e.key==='ArrowRight')right=false;
+});
+
+function reset(){
+  car.x=130;obs.y=-60;gameOver=false;startTime=Date.now();loop();
+}
+
+function loop(){
+  x.clearRect(0,0,300,400);
+  let elapsed = (Date.now() - startTime)/1000;
+  if(elapsed >= 10){
+    alert('Congratulations you have won 1 taka!');
+    reset();
+    return;
+  }
+
+  if(gameOver){
+    x.fillStyle='rgba(0,0,0,0.6)';
+    x.fillRect(0,0,300,400);
+    x.fillStyle='white';
+    x.font='20px Arial';
+    x.textAlign='center';
+    x.fillText('Game Over',150,200);
+    x.font='14px Arial';
+    x.fillText('Press space to restart',150,230);
+    return;
+  }
+
+  if(left) car.x-=20;
+  if(right) car.x+=20;
+  car.x=Math.max(0,Math.min(260,car.x));
+  obs.y+=30;
+  if(obs.y>400){obs.y=-60;obs.x=Math.random()*260;}
+
+  // Draw scene
+  x.fillStyle='#777';x.fillRect(0,0,300,400);
+  x.fillStyle='red';x.fillRect(car.x,car.y,car.w,car.h);
+  x.fillStyle='black';x.fillRect(obs.x,obs.y,obs.w,obs.h);
+
+  // Draw timer
+  x.fillStyle='white';
+  x.font='14px Arial';
+  x.fillText('Time: '+elapsed.toFixed(1)+'s',150,20);
+
+  // Collision
+  if(car.x<obs.x+obs.w&&car.x+car.w>obs.x&&car.y<obs.y+obs.h&&car.y+car.h>obs.y){gameOver=true;}
+
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+<style type="text/css">
+    h1
+    {
+      color:white;
+      background-color:orange;
+      text-align:center;
+      font-size:60px;
+      font-family:cursive;
+      padding:40px;
+    }
+</style>
+<h1>1kgem</h1>
+</body>
+</html>
